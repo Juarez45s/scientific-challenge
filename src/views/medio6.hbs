@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Question</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    body {
+      background: linear-gradient(180deg, #008080, #000080);
+      color: black;
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      flex-direction: column;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 400px;
+      padding: 20px;
+      background-color: #f5f5f5;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .question {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 15px;
+      text-align: center;
+      color: #333;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #fff;
+      border: 1px solid #000;
+      padding: 10px;
+      border-radius: 5px;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+      cursor: pointer;
+    }
+
+    .option:hover {
+      background-color: #f0f0f0;
+    }
+
+    .correct.selected {
+      border-color: #28a745;
+    }
+
+    .correct.selected i {
+      color: #28a745;
+      display: inline;
+    }
+
+    .incorrect.selected {
+      border-color: #dc3545;
+    }
+
+    .incorrect.selected i {
+      color: #dc3545;
+      display: inline;
+    }
+
+    .option i {
+      font-size: 20px;
+      display: none;
+    }
+
+    .next {
+      background-color: #060606;
+      color: #fff;
+      padding: 20px 30px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background-color 0.3s ease;
+      align-self: flex-end;
+    }
+
+    .next:hover {
+      background-color: #0a0a0a;
+    }
+
+    .next i {
+      margin-left: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="question">
+      <p>Elige la respuesta correcta - 10 puntos</p>
+      <p>¿Qué factores influyen en la caída libre?</p>
+    </div>
+    <div class="options">
+      <div class="option incorrect" data-points="0">
+        <p>La aceleración gravitacional y la resistencia del aire.</p>
+        <i class="fas fa-times-circle"></i>
+      </div>
+      <div class="option incorrect" data-points="0">
+        <p>La resistencia del aire acelera al objeto en caída libre.</p>
+        <i class="fas fa-times-circle"></i>
+      </div>
+      <div class="option correct" data-points="10">
+        <p>total = g<sup>2</sup>v<sub>0</sub> ⋅ sin(θ)</p>
+        <i class="fas fa-check-circle"></i>
+      </div>
+    </div>
+    <button class="next" onclick="location.href='/menu'">Next <i class="fas fa-arrow-right"></i></button>
+  </div>
+
+  <script>
+    let selectedOption = null;
+    let score = 0;
+
+    document.querySelectorAll('.option').forEach(option => {
+      option.addEventListener('click', function() {
+        if (selectedOption) {
+          selectedOption.classList.remove('selected', 'correct', 'incorrect');
+          selectedOption.querySelector('i').style.display = 'none';
+        }
+
+        this.classList.add('selected');
+        selectedOption = this;
+
+        if (this.classList.contains('correct')) {
+          this.classList.add('correct');
+          this.querySelector('i').style.display = 'inline';
+        } else {
+          this.classList.add('incorrect');
+          this.querySelector('i').style.display = 'inline';
+        }
+
+        score = parseInt(this.getAttribute('data-points'));
+      });
+    });
+
+    document.querySelector('.next').addEventListener('click', function() {
+      if (selectedOption) {
+        alert('Puntuación obtenida: ' + score);
+      } else {
+        alert('Por favor selecciona una opción.');
+      }
+    });
+  </script>
+</body>
+</html>

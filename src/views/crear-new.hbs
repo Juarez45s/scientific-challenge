@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>crear-new</title>
+    <style>
+        /* Estilos básicos */
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(to bottom, #000080, #008080); /* Degradado de fondo */
+        }
+
+        .container {
+            max-width: 600px;
+            width: 90%; /* Asegura que ocupe casi todo el ancho en móviles */
+            background-color: #fff;
+            margin: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #4CAF50;
+        }
+
+        .question {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-left: 4px solid #4CAF50;
+            border-radius: 4px;
+        }
+
+        .options {
+            margin-left: 15px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .share-code {
+            display: none;
+            text-align: center;
+            font-weight: bold;
+            color: green;
+            margin-top: 20px;
+            font-size: 18px;
+        }
+
+        .share-code span {
+            background-color: #eafbea;
+            padding: 10px;
+            border-radius: 5px;
+            color: #333;
+        }
+
+        /* Media queries para pantallas pequeñas como teléfonos y tabletas */
+        @media (max-width: 768px) {
+            .container {
+                max-width: 100%;
+                padding: 15px;
+            }
+
+            button {
+                font-size: 14px;
+                padding: 8px 12px;
+                margin-top: 5px;
+            }
+
+            input[type="text"] {
+                font-size: 14px;
+                padding: 6px;
+            }
+
+            h2 {
+                font-size: 20px;
+            }
+
+            .share-code {
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+
+            button {
+                font-size: 12px;
+                padding: 6px 10px;
+                margin-top: 5px;
+            }
+
+            input[type="text"] {
+                font-size: 12px;
+                padding: 5px;
+            }
+
+            h2 {
+                font-size: 18px;
+            }
+
+            .share-code {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Crear Nuevo Quiz</h2>
+
+        <form id="quizForm">
+            <!-- Apartado para el nombre del quiz -->
+            <label for="quizName">Nombre del Quiz:</label>
+            <input type="text" id="quizName" name="quizName" placeholder="Escribe el nombre del quiz" required>
+
+            <div id="questionsContainer"></div>
+            
+            <button type="button" onclick="addQuestion('multipleChoice')">Agregar Pregunta de Selección Múltiple</button>
+            <button type="button" onclick="addQuestion('trueFalse')">Agregar Pregunta de Verdadero/Falso</button>
+            
+            <div class="share-code" id="shareCode">
+                Código para compartir: <span id="generatedCode"></span>
+            </div>
+
+            <button type="button" onclick="finalizarQuiz()">Finalizar y Compartir</button>
+            <button type="button" onclick="guardarQuiz()">Guardar Quiz</button>
+            <button class="button" onclick="location.href='/vista-controlador'">vista-controlador</button>
+
+        </form>
+    </div>
+
+    <script>
+        let questionCount = 0;
+        let quizzes = JSON.parse(localStorage.getItem('quizzes')) || [];
+
+        function addQuestion(type) {
+            questionCount++;
+            const questionDiv = document.createElement('div');
+            questionDiv.classList.add('question');
+
+            if (type === 'multipleChoice') {
+                questionDiv.innerHTML = `
+                    <label>Pregunta ${questionCount} (Selección Múltiple):</label>
+                    <input type="text" name="question${questionCount}" placeholder="Escribe la pregunta" required>
+                    <div class="options">
+                        <label><input type="radio" name="correctOption${questionCount}" value="1"> Opción 1: <input type="text" name="option${questionCount}_1" required></label><br>
+                        <label><input type="radio" name="correctOption${questionCount}" value="2"> Opción 2: <input type="text" name="option${questionCount}_2" required></label><br>
+                        <label><input type="radio" name="correctOption${questionCount}" value="3"> Opción 3: <input type="text" name="option${questionCount}_3" required></label><br>
+                        <label><input type="radio" name="correctOption${questionCount}" value="4"> Opción 4: <input type="text" name="option${questionCount}_4" required></label>
+                    </div>
+                `;
+            } else if (type === 'trueFalse') {
+                questionDiv.innerHTML = `
+                    <label>Pregunta ${questionCount} (Verdadero/Falso):</label>
+                    <input type="text" name="question${questionCount}" placeholder="Escribe la pregunta" required>
+                    <div class="options">
+                        <label><input type="radio" name="answer${questionCount}" value="Verdadero" required> Verdadero</label><br>
+                        <label><input type="radio" name="answer${questionCount}" value="Falso" required> Falso</label>
+                    </div>
+                `;
+            }
+
+            document.getElementById('questionsContainer').appendChild(questionDiv);
+        }
+
+        function finalizarQuiz() {
+            const generatedCode = Math.floor(100000 + Math.random() * 900000); // Código de 6 dígitos
+            document.getElementById('generatedCode').innerText = generatedCode;
+            document.getElementById('shareCode').style.display = 'block';
+            guardarQuiz(generatedCode); // Guardar quiz al finalizar
+        }
+
+        function guardarQuiz(generatedCode) {
+            const form = document.getElementById('quizForm');
+            const formData = new FormData(form);
+            const quizName = formData.get('quizName');
+            const quiz = {
+                name: quizName,
+                code: generatedCode,
+                questions: []
+            };
+
+            for (let i = 1; i <= questionCount; i++) {
+                const question = formData.get(`question${i}`);
+                const type = formData.has(`option${i}_1`) ? 'multipleChoice' : 'trueFalse';
+                const options = [];
+                let correctAnswer = '';
+
+                if (type === 'multipleChoice') {
+                    for (let j = 1; j <= 4; j++) {
+                        options.push(formData.get(`option${i}_${j}`));
+                    }
+                    correctAnswer = formData.get(`correctOption${i}`);
+                } else {
+                    correctAnswer = formData.get(`answer${i}`);
+                }
+
+                quiz.questions.push({ question, type, options, correctAnswer });
+            }
+
+            quizzes.push(quiz);
+            localStorage.setItem('quizzes', JSON.stringify(quizzes));
+            alert('Quiz guardado con éxito!');
+            // Redirigir a la página de quizzes guardados
+            window.location.href = 'crear-quiz';
+
+        }
+    </script>
+</body>
+</html>

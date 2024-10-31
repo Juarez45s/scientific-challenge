@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    body {
+      background: linear-gradient(180deg, #008080, #000080);
+      color: black;
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 10;
+      flex-direction: column;
+    }
+
+    .container {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: auto;
+      background-color: #f5f5f5;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .container.active {
+      display: flex;
+    }
+
+    .question {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      text-align: center;
+      color: #333;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      width: 80%;
+      margin: 0 auto;
+    }
+
+    .option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #fff;
+      border: 1px solid #000;
+      padding: 15px;
+      border-radius: 5px;
+      font-size: 18px;
+      transition: background-color 0.3s ease;
+      cursor: pointer;
+    }
+
+    .option:hover {
+      background-color: #f0f0f0;
+    }
+
+    .correct.selected {
+      border-color: #28a745;
+    }
+
+    .correct.selected i {
+      color: #28a745;
+      display: inline;
+    }
+
+    .incorrect.selected {
+      border-color: #dc3545;
+    }
+
+    .incorrect.selected i {
+      color: #dc3545;
+      display: inline;
+    }
+
+    .option i {
+      font-size: 24px;
+      display: none;
+    }
+
+    .next {
+      background-color: #060606;
+      color: #fff;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 5px;
+      font-size: 18px;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background-color 0.3s ease;
+      align-self: flex-end;
+    }
+
+    .next:hover {
+      background-color: #0a0a0a;
+    }
+
+    .next i {
+      margin-left: 10px;
+    }
+
+    .stars-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .star {
+      width: 40px;
+      height: 40px;
+      fill: white;
+      border: 2px solid black;
+      padding: 5px;
+      margin: 0 10px;
+      border-radius: 50%;
+    }
+
+    .star.yellow {
+      fill: yellow;
+    }
+
+    /* Media queries para pantallas pequeñas como teléfonos y tabletas */
+        @media (max-width: 768px) {
+            .container {
+                max-width: 100%;
+                padding: 15px;
+            }
+
+            button {
+                font-size: 14px;
+                padding: 8px 12px;
+                margin-top: 5px;
+            }
+
+            input[type="text"] {
+                font-size: 14px;
+                padding: 6px;
+            }
+
+            h2 {
+                font-size: 20px;
+            }
+
+            .share-code {
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+
+            button {
+                font-size: 12px;
+                padding: 6px 10px;
+                margin-top: 5px;
+            }
+
+            input[type="text"] {
+                font-size: 12px;
+                padding: 5px;
+            }
+
+            h2 {
+                font-size: 18px;
+            }
+
+            .share-code {
+                font-size: 14px;
+            }
+        }
+  </style>
+</head>
+<body>
+  <div class="container active" id="question-1">
+    <div class="question">
+      <p>Elige la respuesta correcta - 10 puntos</p>
+      <p>La aceleración de gravedad tiene dirección <br> vertical y sentido hacia abajo.<br> Estrictamente hablando, su dirección es hacia <br> el centro de la tierra.</p>
+    </div>
+    <div class="options">
+      <div class="option correct" id="verdadero" onclick="checkAnswer('verdadero')">
+        <p>Verdadero</p>
+        <i class="fas fa-check-circle"></i>
+      </div>
+      <div class="option incorrect" id="falso" onclick="checkAnswer('falso')">
+        <p>Falso</p>
+        <i class="fas fa-times-circle"></i>
+      </div>
+    </div>
+    <button class="next" onclick="nextQuestion(2)">Siguiente <i class="fas fa-arrow-right"></i></button>
+  </div>
+
+  <div class="container" id="question-2">
+    <div class="question">
+      <p>Elige la respuesta correcta - 10 puntos</p>
+      <p>Para calcular la altura máxima, aplicamos:</p>
+    </div>
+    <div class="options">
+      <div class="option incorrect" id="opcion1" onclick="checkAnswer('opcion1')">
+        <p>h=3g(v0.Sin(θ))<sup>3</sup></p>
+        <i class="fas fa-times-circle"></i>
+      </div>
+      <div class="option correct" id="opcion2" onclick="checkAnswer('opcion2')">
+        <p>h=2g(v0.sin(θ))<sup>2</sup></p>
+        <i class="fas fa-check-circle"></i>
+      </div>
+      <div class="option incorrect" id="opcion3" onclick="checkAnswer('opcion3')">
+        <p>h=4h(v0.Sin(θ))<sup>56</sup></p>
+        <i class="fas fa-times-circle"></i>
+      </div>
+    </div>
+    <button class="next" onclick="nextQuestion(3)">Siguiente <i class="fas fa-arrow-right"></i></button>
+  </div>
+
+  <div class="container" id="question-3">
+    <div class="question">
+      <p>Elige la respuesta correcta - 10 puntos</p>
+      <p>La fórmula de la caída libre es vf=gt y h=1/2gt<sup>2</sup>.</p>
+    </div>
+    <div class="options">
+      <div class="option correct" id="verdadero3" onclick="checkAnswer('verdadero3')">
+        <p>Verdadero</p>
+        <i class="fas fa-check-circle"></i>
+      </div>
+      <div class="option incorrect" id="falso3" onclick="checkAnswer('falso3')">
+        <p>Falso</p>
+        <i class="fas fa-times-circle"></i>
+      </div>
+    </div>
+    <button class="next" onclick="nextQuestion(4)">Siguiente <i class="fas fa-arrow-right"></i></button>
+  </div>
+
+  <div class="container" id="question-4">
+    <div class="question">
+      <p>Elige la respuesta correcta - 10 puntos</p>
+      <p>Para calcular el alcance, aplicamos:</p>
+    </div>
+    <div class="options">
+      <div class="option incorrect" id="opcion4" onclick="checkAnswer('opcion4')">
+        <p>R=gv0<sup>2</sup>⋅sin(26θ)</p>
+        <i class="fas fa-times-circle"></i>
+      </div>
+      <div class="option incorrect" id="opcion5" onclick="checkAnswer('opcion5')">
+        <p>R=gv0<sup>2</sup>⋅sin(89θ)</p>
+        <i class="fas fa-times-circle"></i>
+      </div>
+      <div class="option correct" id="opcion6" onclick="checkAnswer('opcion6')">
+        <p>R=gv0<sup>2</sup>⋅sin(2θ)</p>
+        <i class="fas fa-check-circle"></i>
+      </div>
+    </div>
+    <button class="next" onclick="nextQuestion(5)">Siguiente <i class="fas fa-arrow-right"></i></button>
+  </div>
+
+  <div class="container" id="question-5">
+    <div class="question">
+      <p>Elige la respuesta correcta - 10 puntos</p>
+      <p>La gravedad es 15 m/s<sup>2</sup>.</p>
+    </div>
+    <div class="options">
+      <div class="option incorrect" id="verdadero5" onclick="checkAnswer('verdadero5')">
+        <p>Verdadero</p>
+        <i class="fas fa-times-circle"></i>
+      </div>
+      <div class="option correct" id="falso5" onclick="checkAnswer('falso5')">
+        <p>Falso</p>
+        <i class="fas fa-check-circle"></i>
+      </div>
+    </div>
+    <button class="next" onclick="finishQuiz()">Finalizar <i class="fas fa-arrow-right"></i></button>
+
+  </div>
+
+  <div class="container" id="final-message">
+    <div class="question">
+      <h2>¡Gracias por completar el quiz!</h2>
+      <p>Tu puntuación: <span id="score">0</span></p>
+    </div>
+    <div class="stars-container">
+      <svg class="star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M12 1.3l3.3 6.8 7.5 1.1-5.4 5.3 1.3 7.5L12 18.5l-6.7 3.5 1.3-7.5L1.2 9.2l7.5-1.1L12 1.3z"/>
+      </svg>
+      <svg class="star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M12 1.3l3.3 6.8 7.5 1.1-5.4 5.3 1.3 7.5L12 18.5l-6.7 3.5 1.3-7.5L1.2 9.2l7.5-1.1L12 1.3z"/>
+      </svg>
+      <svg class="star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M12 1.3l3.3 6.8 7.5 1.1-5.4 5.3 1.3 7.5L12 18.5l-6.7 3.5 1.3-7.5L1.2 9.2l7.5-1.1L12 1.3z"/>
+      </svg>
+      <svg class="star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M12 1.3l3.3 6.8 7.5 1.1-5.4 5.3 1.3 7.5L12 18.5l-6.7 3.5 1.3-7.5L1.2 9.2l7.5-1.1L12 1.3z"/>
+      </svg>
+      <svg class="star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M12 1.3l3.3 6.8 7.5 1.1-5.4 5.3 1.3 7.5L12 18.5l-6.7 3.5 1.3-7.5L1.2 9.2l7.5-1.1L12 1.3z"/>
+      </svg>
+    </div>
+    <p id="motivational-word">¡Excelente trabajo!</p>
+    <button class="buttoon-comienzo" onclick="location.href='/comienzo'">regresar</button>
+  </div>
+
+  <script>
+    let score = 0;
+
+    function checkAnswer(selectedId) {
+      const selectedOption = document.getElementById(selectedId);
+      if (selectedOption.classList.contains('correct')) {
+        selectedOption.classList.add('selected', 'correct');
+        score += 10;
+      } else {
+        selectedOption.classList.add('selected', 'incorrect');
+      }
+      updateStars();
+    }
+
+    function nextQuestion(questionNumber) {
+      document.querySelector('.container.active').classList.remove('active');
+      document.getElementById('question-' + questionNumber).classList.add('active');
+    }
+
+    function finishQuiz() {
+      document.querySelector('.container.active').classList.remove('active');
+      document.getElementById('final-message').classList.add('active');
+      document.getElementById('score').textContent = score;
+      updateMotivationalWord();
+    }
+
+    function updateStars() {
+      const stars = document.querySelectorAll('.star');
+      const numberOfStars = Math.min(Math.floor(score / 10), 5);
+      stars.forEach((star, index) => {
+        if (index < numberOfStars) {
+          star.classList.add('yellow');
+        } else {
+          star.classList.remove('yellow');
+        }
+      });
+    }
+
+    function updateMotivationalWord() {
+      const motivationalWord = document.getElementById('motivational-word');
+      if (score === 50) {
+        motivationalWord.textContent = '¡Perfecto! 5 estrellas.';
+      } else if (score >= 30) {
+        motivationalWord.textContent = '¡Buen trabajo!';
+      } else {
+        motivationalWord.textContent = '¡Sigue intentándolo!';
+      }
+    }
+  </script>
+</body>
+</html>

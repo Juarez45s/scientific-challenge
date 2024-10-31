@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vista Controlador - Resolver Quiz</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(to bottom, #000080, #008080); /* Degradado de fondo */
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2, h3 {
+            text-align: center;
+        }
+
+        .quiz-info {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .question {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-left: 4px solid #4CAF50;
+            border-radius: 4px;
+        }
+
+        .options {
+            margin-left: 15px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .result {
+            margin-top: 20px;
+            text-align: center;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .correct {
+            color: green;
+        }
+
+        .incorrect {
+            color: red;
+        }
+
+        /* Confetti animation */
+        .confetti {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: rgba(255, 0, 0, 0.8);
+            animation: fall 3s linear infinite;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+
+        /* Media queries para pantallas pequeñas como teléfonos y tabletas */
+        @media (max-width: 768px) {
+            .container {
+                max-width: 100%;
+                padding: 15px;
+            }
+
+            button {
+                font-size: 14px;
+                padding: 8px 12px;
+                margin-top: 5px;
+            }
+
+            input[type="text"] {
+                font-size: 14px;
+                padding: 6px;
+            }
+
+            h2 {
+                font-size: 20px;
+            }
+
+            .share-code {
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+
+            button {
+                font-size: 12px;
+                padding: 6px 10px;
+                margin-top: 5px;
+            }
+
+            input[type="text"] {
+                font-size: 12px;
+                padding: 5px;
+            }
+
+            h2 {
+                font-size: 18px;
+            }
+
+            .share-code {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Resolver Quiz</h2>
+
+        <div class="quiz-info">
+            <h3>Quiz: <span id="quizName"></span></h3>
+            <p>Código de Compartir: <strong id="quizCode"></strong></p>
+        </div>
+
+        <form id="quizForm">
+            <label>Ingresa tu nombre:</label><br>
+            <input type="text" id="userName" required><br><br>
+
+            <div id="questionsContainer"></div>
+
+            <button type="button" onclick="submitQuiz()">Enviar Respuestas</button>
+        </form>
+
+        <div id="resultContainer"></div> <!-- Para mostrar los resultados -->
+    </div>
+
+    <div id="confettiContainer" class="confetti"></div> <!-- Contenedor de confeti -->
+
+    <script>
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const quizCode = urlParams.get('code');
+
+            // Obtener el quiz del localStorage
+            const quizzes = JSON.parse(localStorage.getItem('quizzes')) || [];
+            const quiz = quizzes.find(q => q.code == quizCode);
+
+            if (quiz) {
+                document.getElementById('quizName').innerText = quiz.name;
+
+                // Generar un código de compartir aleatorio de 6 dígitos
+                const randomCode = Math.random().toString().slice(2, 8);
+                document.getElementById('quizCode').innerText = randomCode;
+
+                const questionsContainer = document.getElementById('questionsContainer');
+                quiz.questions.forEach((q, index) => {
+                    const questionDiv = document.createElement('div');
+                    questionDiv.classList.add('question');
+
+                    if (q.type === 'multipleChoice') {
+                        questionDiv.innerHTML = `
+                            <label>Pregunta ${index + 1}: ${q.question}</label>
+                            <div class="options">
+                                ${q.options.map((option, i) => `
+                                    <label><input type="radio" name="question${index}" value="${i + 1}" required> ${option}</label><br>
+                                `).join('')}
+                            </div>
+                        `;
+                    } else if (q.type === 'trueFalse') {
+                        questionDiv.innerHTML = `
+                            <label>Pregunta ${index + 1}: ${q.question}</label>
+                            <div class="options">
+                                <label><input type="radio" name="question${index}" value="Verdadero" required> Verdadero</label><br>
+                                <label><input type="radio" name="question${index}" value="Falso" required> Falso</label>
+                            </div>
+                        `;
+                    }
+
+                    questionsContainer.appendChild(questionDiv);
+                });
+            } else {
+                alert('No se encontró el quiz con ese código.');
+            }
+        };
+
+        function submitQuiz() {
+            const form = document.getElementById('quizForm');
+            const formData = new FormData(form);
+            const quizAnswers = {};
+            const userName = document.getElementById('userName').value;
+
+            if (!userName) {
+                alert('Por favor, ingresa tu nombre.');
+                return;
+            }
+
+            // Obtener respuestas del formulario
+            for (let [key, value] of formData.entries()) {
+                quizAnswers[key] = value;
+            }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const quizCode = urlParams.get('code');
+
+            // Obtener el quiz del localStorage
+            const quizzes = JSON.parse(localStorage.getItem('quizzes')) || [];
+            const quiz = quizzes.find(q => q.code == quizCode);
+
+            if (quiz) {
+                const resultContainer = document.getElementById('resultContainer');
+                resultContainer.innerHTML = ''; // Limpiar resultados anteriores
+
+                let correctCount = 0;
+
+                quiz.questions.forEach((q, index) => {
+                    const userAnswer = quizAnswers[`question${index}`];
+                    const correctAnswer = q.correctAnswer; // Respuesta correcta
+
+                    const resultDiv = document.createElement('div');
+                    resultDiv.classList.add('result');
+
+                    if (userAnswer == correctAnswer) {
+                        resultDiv.innerHTML = `Pregunta ${index + 1}: <span class="correct">¡Correcto!</span>`;
+                        correctCount++;
+                    } else {
+                        resultDiv.innerHTML = `Pregunta ${index + 1}: <span class="incorrect">Incorrecto. La respuesta correcta es ${correctAnswer}.</span>`;
+                    }
+
+                    resultContainer.appendChild(resultDiv);
+                });
+
+                alert(`¡Has respondido ${correctCount} de ${quiz.questions.length} preguntas correctamente!`);
+
+                // Guardar el resultado del usuario
+                let userResults = JSON.parse(localStorage.getItem('userResults')) || [];
+                userResults.push({ name: userName, score: correctCount });
+                localStorage.setItem('userResults', JSON.stringify(userResults));
+
+                showTopPerformers();
+            }
+        }
+
+        function showTopPerformers() {
+            const userResults = JSON.parse(localStorage.getItem('userResults')) || [];
+            const topPerformers = userResults.sort((a, b) => b.score - a.score).slice(0, 3);
+
+            if (topPerformers.length > 0) {
+                topPerformers.forEach((user, index) => {
+                    console.log(`Top ${index + 1}: ${user.name} con ${user.score} respuestas correctas.`);
+                });
+
+                if (topPerformers.length >= 3) {
+                    triggerConfetti(); // Activar animación de confeti si hay al menos 3 mejores
+                }
+            }
+        }
+
+        // Función para activar la animación de confeti
+        function triggerConfetti() {
+            const confettiContainer = document.getElementById('confettiContainer');
+            for (let i = 0; i < 100; i++) {
+                const confettiPiece = document.createElement('div');
+                confettiPiece.classList.add('confetti-piece');
+                confettiPiece.style.left = Math.random() * 100 + 'vw';
+                confettiPiece.style.animationDelay = Math.random() * 3 + 's';
+                confettiPiece.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                confettiContainer.appendChild(confettiPiece);
+            }
+            setTimeout(() => confettiContainer.innerHTML = '', 5000); // Limpiar el confeti después de 5 segundos
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Realizar Quiz</title>
+    <style>
+        body {
+            background: linear-gradient(180deg, #008080, #000080);
+            color: white;
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            flex-direction: column;
+        }
+
+        .container {
+            background-color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            width: 400px;
+            text-align: center;
+        }
+
+        .question {
+            margin-bottom: 20px;
+            text-align: left; /* Alinear preguntas a la izquierda */
+        }
+
+        button {
+            background-color: #f39c12;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            margin-top: 10px; /* Espacio entre el botón y las preguntas */
+        }
+
+        button:hover {
+            background-color: #e67e22;
+        }
+
+        input[type="radio"] {
+            margin-right: 10px; /* Espacio entre el botón de opción y el texto */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="quizTitle">Cargando quiz...</h1>
+        <div id="quizContent"></div>
+        <button id="submitButton" style="display: none;">Enviar respuestas</button>
+    </div>
+
+    <script>
+        // Obtener el ID del quiz desde la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const quizId = urlParams.get('id');
+
+        // Recuperar los quizzes del localStorage
+        const quizzes = JSON.parse(localStorage.getItem('quizzes')) || [];
+
+        // Encontrar el quiz correspondiente
+        const quiz = quizzes.find(q => q.id == quizId);
+
+        // Elementos de la página
+        const quizTitle = document.getElementById('quizTitle');
+        const quizContent = document.getElementById('quizContent');
+        const submitButton = document.getElementById('submitButton');
+
+        // Mostrar el quiz
+        if (quiz) {
+            quizTitle.textContent = quiz.name;
+            quiz.questions.forEach((question, index) => {
+                const questionElem = document.createElement('div');
+                questionElem.classList.add('question');
+
+                // Crear botones de opción para cada pregunta
+                const questionHTML = `<strong>Pregunta ${index + 1}:</strong> ${question.text}<br>`;
+                questionElem.innerHTML = questionHTML;
+
+                question.answers.forEach((answer, answerIndex) => {
+                    questionElem.innerHTML += `
+                        <label>
+                            <input type="radio" name="question${index}" value="${answerIndex}">
+                            ${answer}
+                        </label><br>
+                    `;
+                });
+
+                quizContent.appendChild(questionElem);
+            });
+
+            // Mostrar el botón de enviar
+            submitButton.style.display = 'block';
+            submitButton.onclick = function() {
+                const responses = [];
+                quiz.questions.forEach((question, index) => {
+                    const selectedAnswer = document.querySelector(`input[name="question${index}"]:checked`);
+                    responses.push(selectedAnswer ? selectedAnswer.value : null);
+                });
+                
+                // Aquí puedes manejar las respuestas como desees
+                alert('Respuestas enviadas: ' + responses.join(', '));
+            };
+        } else {
+            quizTitle.textContent = 'Quiz no encontrado';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unirse al Quiz</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(to bottom, #000080, #008080);
+        }
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            width: 300px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .time {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 24px;
+            color: #333;
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .code {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Media queries para pantallas pequeñas como teléfonos y tabletas */
+        @media (max-width: 768px) {
+            .container {
+                max-width: 100%;
+                padding: 15px;
+            }
+
+            button {
+                font-size: 14px;
+                padding: 8px 12px;
+                margin-top: 5px;
+            }
+
+            input[type="text"] {
+                font-size: 14px;
+                padding: 6px;
+            }
+
+            h2 {
+                font-size: 20px;
+            }
+
+            .share-code {
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+
+            button {
+                font-size: 12px;
+                padding: 6px 10px;
+                margin-top: 5px;
+            }
+
+            input[type="text"] {
+                font-size: 12px;
+                padding: 5px;
+            }
+
+            h2 {
+                font-size: 18px;
+            }
+
+            .share-code {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="time"></div>
+    <div class="container">
+        <h2>Ingrese Pin asignado</h2>
+        <input type="text" id="pin" name="pin">
+        <button class="button" onclick="location.href='/vista-controlador'">unirse</button>
+        <div class="code"></div>
+    </div>
+
+    <script>
+        const quizzes = JSON.parse(localStorage.getItem('quizzes')) || [];
+
+        function verificarPin() {
+            const pin = document.getElementById('pin').value;
+            const quiz = quizzes.find(q => q.pin === pin);
+
+            if (quiz) {
+                window.location.href = quiz.url + '?code=' + quiz.code;
+            } else {
+                document.querySelector('.code').innerText = "Por favor, ingrese un PIN válido.";
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verdadero o Falso</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    body {
+      background: linear-gradient(180deg, #008080, #000080);
+      color: black;
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      flex-direction: column;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: auto;
+      background-color: #f5f5f5;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      width: 390px;
+      text-align: center;
+    }
+
+    .question {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .answer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #fff;
+      border: 1px solid #000;
+      padding: 15px;
+      border-radius: 5px;
+      font-size: 18px;
+      transition: background-color 0.3s ease;
+      cursor: pointer;
+      margin-bottom: 10px;
+      width: 100%;
+    }
+
+    .answer:hover {
+      background-color: #f0f0f0;
+    }
+
+    .correct.selected {
+      border-color: #28a745;
+    }
+
+    .correct.selected i {
+      color: #28a745;
+      display: inline;
+    }
+
+    .incorrect.selected {
+      border-color: #dc3545;
+    }
+
+    .incorrect.selected i {
+      color: #dc3545;
+      display: inline;
+    }
+
+    .option i {
+      font-size: 24px;
+      display: none;
+    }
+
+    .next {
+      background-color: #060606;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background-color 0.3s ease;
+      align-self: flex-end;
+    }
+
+    .next:hover {
+      background-color: #0a0a0a;
+    }
+
+    .next .arrow {
+      margin-left: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="question">
+      <p>VERDADERO / FALSO</p>
+      <p>La velocidad del objeto aumenta constantemente debido a la aceleración gravitacional.</p>
+    </div>
+    <div class="answer" id="falso" onclick="checkAnswer('falso')">
+      Falso
+      <i class="fas fa-times-circle" style="display: none;"></i>
+    </div>
+     <div class="answer" id="verdadero" onclick="checkAnswer('verdadero')">
+      Verdadero
+      <i class="fas fa-check-circle" style="display: none;"></i>
+    </div>
+    <div class="score">
+      <p>Puntuación: <span id="score">0</span></p>
+    </div>
+    <button class="next" onclick="location.href='/medio4'">Next <span class="arrow">→</span></button>
+  </div>
+
+  <script>
+    let score = 0;
+    let currentQuestion = 0;
+    let answered = false;
+    const questions = [
+      {
+        question: "La aceleración de gravedad tiene dirección vertical y sentido hacia abajo. Estrictamente hablando, su dirección es hacia el centro de la tierra.",
+        answer: "verdadero"
+      },
+      // Puedes agregar más preguntas aquí...
+    ];
+
+    function checkAnswer(selectedAnswer) {
+      if (answered) return;
+
+      const correctAnswer = questions[currentQuestion].answer;
+      const answerElement = document.getElementById(selectedAnswer);
+      const otherAnswer = selectedAnswer === 'verdadero' ? 'falso' : 'verdadero';
+      const otherAnswerElement = document.getElementById(otherAnswer);
+
+      if (selectedAnswer === correctAnswer) {
+        score += 10;
+        answerElement.classList.add('correct', 'selected');
+        answerElement.querySelector('i').style.display = 'inline'; // Muestra el check
+        alert("¡Correcto!");
+      } else {
+        answerElement.classList.add('incorrect', 'selected');
+        answerElement.querySelector('i').style.display = 'inline'; // Muestra la X
+        alert("Incorrecto");
+      }
+
+      otherAnswerElement.style.pointerEvents = 'none';
+      answered = true; 
+      document.getElementById('score').textContent = score;
+    }
+
+    function nextQuestion() {
+      if (currentQuestion < questions.length - 1) {
+        currentQuestion++;
+        answered = false; 
+        document.getElementById('verdadero').classList.remove('selected', 'correct', 'incorrect');
+        document.getElementById('falso').classList.remove('selected', 'correct', 'incorrect');
+        document.getElementById('verdadero').querySelector('i').style.display = 'none'; // Ocultar el check
+        document.getElementById('falso').querySelector('i').style.display = 'none'; // Ocultar la X
+        document.getElementById('verdadero').style.pointerEvents = 'auto';
+        document.getElementById('falso').style.pointerEvents = 'auto';
+        document.getElementById('score').textContent = score; // Actualiza la puntuación
+      } else {
+        alert('Fin del quiz');
+      }
+    }
+  </script>
+</body>
+</html>

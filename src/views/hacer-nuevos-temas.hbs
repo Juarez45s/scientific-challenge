@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Crear Nuevo Tema</title>
+    <style>
+        /* Estilos personalizados */
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #000080, #008080);
+            color: #fff;
+        }
+
+        .form-container {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #5af683;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-top: 10px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #00CC66;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #009933;
+        }
+
+        .error-message {
+            color: #ff4d4d;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .success-message {
+            color: #5af683;
+            margin-top: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Crear Nuevo Tema</h1>
+        <form id="crear-tema-form" enctype="multipart/form-data">
+            <label for="titulo">Título:</label>
+            <input type="text" id="titulo" name="titulo" required>
+
+            <label for="descripcion">Descripción:</label>
+            <textarea id="descripcion" name="descripcion" rows="4" required></textarea>
+
+            <label for="imagen">Imagen (desde tu computadora):</label>
+            <input type="file" id="imagen" name="imagen" accept="image/*" required>
+
+            <label for="publicar">
+                <input type="checkbox" id="publicar" name="publicar" checked> Publicar inmediatamente
+            </label>
+
+            <button type="submit">Crear Tema</button>
+        </form>
+        <div id="message" class="success-message"></div>
+    </div>
+
+    <script>
+        document.getElementById('crear-tema-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const formData = new FormData(form);
+
+            const tema = {
+                id: Date.now(),
+                titulo: formData.get('titulo'),
+                descripcion: formData.get('descripcion'),
+                publicado: formData.get('publicar') === 'on'
+            };
+
+            // Guardar la imagen en el almacenamiento local no es posible, pero puedes guardar el nombre o referencia.
+            const archivoImagen = formData.get('imagen');
+            tema.imagen = archivoImagen ? archivoImagen.name : '';
+
+            // Obtener temas existentes o inicializar un array vacío
+            const temas = JSON.parse(localStorage.getItem('temas') || '[]');
+            temas.push(tema);
+
+            // Guardar los temas actualizados en el almacenamiento local
+            localStorage.setItem('temas', JSON.stringify(temas));
+
+            // Mostrar mensaje de éxito
+            const messageElement = document.getElementById('message');
+            messageElement.textContent = 'Tema creado exitosamente';
+            messageElement.className = 'success-message';
+
+            // Limpiar el formulario
+            form.reset();
+
+            // Redirigir a la página de inicio después de 2 segundos
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
