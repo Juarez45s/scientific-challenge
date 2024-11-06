@@ -11,7 +11,7 @@ const path = require('path');
 const app = express();
 app.set('port', 4000);
 
-// Configuración de las vistas
+
 app.set('views', path.join(__dirname, 'views'));
 app.engine('.hbs', engine({
     extname: '.hbs',
@@ -20,7 +20,7 @@ app.engine('.hbs', engine({
 }));
 app.set('view engine', 'hbs');
 
-// Middlewares
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -32,7 +32,7 @@ app.use(myconnection(mysql, {
     database: 'nodelogin'
 }, 'single'));
 
-// Configuración de la sesión con MySQLStore
+
 const sessionStore = new MySQLStore({
     host: 'localhost',
     user: 'root',
@@ -48,7 +48,7 @@ app.use(session({
 }));
 
 
-// Rutas
+
 app.use('/', loginRoutes);
 
 app.get('/', (req, res) => {
@@ -61,7 +61,7 @@ app.get('/', (req, res) => {
 });
 
 
-// Añade esta línea en la sección de rutas
+
 app.get('/comienzo', (req, res) => {
     if (req.session.loggedin) {
         res.render('comienzo');
@@ -70,7 +70,7 @@ app.get('/comienzo', (req, res) => {
     }
 });
 
-// Ruta para mostrar la página de perfil
+
 app.get('/profile', (req, res) => {
     if (req.session.loggedin) {
         let username = req.session.username;
@@ -80,7 +80,7 @@ app.get('/profile', (req, res) => {
     }
 });
 
-// Ruta para actualizar el perfil
+
 app.post('/update-profile', (req, res) => {
     const { username, email, password } = req.body;
     const hashedPassword = bcrypt.hashSync(password, 10);
@@ -90,7 +90,7 @@ app.post('/update-profile', (req, res) => {
         const query = 'UPDATE users SET username = ?, email = ?, password = ? WHERE username = ?';
         connection.query(query, [username, email, hashedPassword, req.session.username], (err, results) => {
             if (err) throw err;
-            // Actualizamos el nombre de usuario en la sesión
+            
             req.session.username = username;
             res.redirect('/');
         });
@@ -99,7 +99,7 @@ app.post('/update-profile', (req, res) => {
 
 
 
-// Ruta para mostrar la página de perfil
+
 app.get('/caida-libre', (req, res) => {
     if (req.session.loggedin) {
         let username = req.session.username;
@@ -109,7 +109,7 @@ app.get('/caida-libre', (req, res) => {
     }
 });
 
-// Ruta para mostrar la página de perfil
+
 app.get('/movimiento-parabolico', (req, res) => {
     if (req.session.loggedin) {
         let username = req.session.username;
@@ -375,7 +375,7 @@ app.get('/comienzo', (req, res) => {
     const temas = [
         { titulo: "Tema 1", descripcion: "Descripción del tema 1", imagen: "/public/img/tema1.jpg" },
         { titulo: "Tema 2", descripcion: "Descripción del tema 2", imagen: "/public/img/tema2.jpg" },
-        // ... otros temas almacenados
+        
     ];
 
     res.render('comienzo', { temas });
@@ -386,7 +386,7 @@ app.get('/comienzo', (req, res) => {
 
 
 app.use('/img', express.static(path.join(__dirname, 'src/views/img')));
-// Iniciar el servidor
+
 app.listen(app.get('port'), () => {
     console.log('listening on port ', app.get('port'));
 });
@@ -400,13 +400,13 @@ app.listen(app.get('port'), () => {
 let quizzes = [];
 
 app.post('/guardar-quiz', (req, res) => {
-    const quiz = req.body; // Aquí obtenemos los datos del formulario
-    quizzes.push(quiz); // Guardamos el quiz en una variable
-    res.redirect('/crear-quiz'); // Redireccionamos a la página de visualización
+    const quiz = req.body; 
+    quizzes.push(quiz); 
+    res.redirect('/crear-quiz'); 
 });
 
 app.get('/crear-quiz', (req, res) => {
-    res.render('crear-quiz', { quizzes }); // Enviamos los quizzes guardados a la vista
+    res.render('crear-quiz', { quizzes }); 
 });
 
 

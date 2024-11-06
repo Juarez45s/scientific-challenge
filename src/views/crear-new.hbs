@@ -13,12 +13,12 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(to bottom, #000080, #008080); /* Degradado de fondo */
+            background: linear-gradient(to bottom, #000080, #008080); 
         }
 
         .container {
             max-width: 600px;
-            width: 90%; /* Asegura que ocupe casi todo el ancho en móviles */
+            width: 90%; 
             background-color: #fff;
             margin: 20px;
             padding: 20px;
@@ -84,7 +84,7 @@
             color: #333;
         }
 
-        /* Media queries para pantallas pequeñas como teléfonos y tabletas */
+       
         @media (max-width: 768px) {
             .container {
                 max-width: 100%;
@@ -142,7 +142,7 @@
         <h2>Crear Nuevo Quiz</h2>
 
         <form id="quizForm">
-            <!-- Apartado para el nombre del quiz -->
+          
             <label for="quizName">Nombre del Quiz:</label>
             <input type="text" id="quizName" name="quizName" placeholder="Escribe el nombre del quiz" required>
 
@@ -197,10 +197,10 @@
         }
 
         function finalizarQuiz() {
-            const generatedCode = Math.floor(100000 + Math.random() * 900000); // Código de 6 dígitos
+            const generatedCode = Math.floor(100000 + Math.random() * 900000); 
             document.getElementById('generatedCode').innerText = generatedCode;
             document.getElementById('shareCode').style.display = 'block';
-            guardarQuiz(generatedCode); // Guardar quiz al finalizar
+            guardarQuiz(generatedCode); 
         }
 
         function guardarQuiz(generatedCode) {
@@ -234,7 +234,7 @@
             quizzes.push(quiz);
             localStorage.setItem('quizzes', JSON.stringify(quizzes));
             alert('Quiz guardado con éxito!');
-            // Redirigir a la página de quizzes guardados
+            
             window.location.href = 'crear-quiz';
 
         }

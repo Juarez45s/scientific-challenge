@@ -2,12 +2,12 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 
-// Manejador de rutas para la página de inicio de sesión
+
 router.get('/login', (req, res) => {
     res.render('login');
 });
 
-// Manejador de rutas para el inicio de sesión
+
 router.post('/login', (req, res) => {
     const { username, password } = req.body;
     req.getConnection((err, connection) => {
@@ -34,12 +34,12 @@ router.post('/login', (req, res) => {
     });
 });
 
-// Manejador de rutas para la página de registro
+
 router.get('/register', (req, res) => {
     res.render('register');
 });
 
-// Manejador de rutas para el registro de usuarios
+
 router.post('/register', (req, res) => {
     const { username, password } = req.body;
     if (!username || !password) {
@@ -50,7 +50,7 @@ router.post('/register', (req, res) => {
             console.error('Connection error:', err);
             return res.redirect('/register');
         }
-        // Encriptar la contraseña antes de guardarla en la base de datos
+       
         bcrypt.hash(password, 10, (err, hash) => {
             if (err) {
                 console.error('Error hashing password:', err);
@@ -70,7 +70,7 @@ router.post('/register', (req, res) => {
     });
 });
 
-// Manejador de rutas para cerrar sesión
+
 router.post('/logout', (req, res) => {
     req.session.destroy((err) => {
         if (err) {

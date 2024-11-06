@@ -72,7 +72,7 @@
             color: #fff;
         }
 
-        /* Media queries para pantallas pequeñas como teléfonos y tabletas */
+        
         @media (max-width: 768px) {
             .container {
                 max-width: 100%;
@@ -158,11 +158,11 @@
 
         function deleteQuiz(index) {
             if (confirm('¿Estás seguro de que deseas eliminar este quiz?')) {
-                // Eliminar quiz del array
+                
                 quizzes.splice(index, 1);
-                // Actualizar localStorage
+                
                 localStorage.setItem('quizzes', JSON.stringify(quizzes));
-                // Renderizar nuevamente los quizzes
+               
                 renderQuizzes();
             }
         }

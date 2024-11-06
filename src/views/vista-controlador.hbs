@@ -12,7 +12,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(to bottom, #000080, #008080); /* Degradado de fondo */
+            background: linear-gradient(to bottom, #000080, #008080); 
         }
         .container {
             max-width: 800px;
@@ -75,7 +75,7 @@
             color: red;
         }
 
-        /* Confetti animation */
+      
         .confetti {
             position: fixed;
             top: 0;
@@ -100,7 +100,7 @@
             }
         }
 
-        /* Media queries para pantallas pequeñas como teléfonos y tabletas */
+       
         @media (max-width: 768px) {
             .container {
                 max-width: 100%;
@@ -171,24 +171,24 @@
             <button type="button" onclick="submitQuiz()">Enviar Respuestas</button>
         </form>
 
-        <div id="resultContainer"></div> <!-- Para mostrar los resultados -->
+        <div id="resultContainer"></div> 
     </div>
 
-    <div id="confettiContainer" class="confetti"></div> <!-- Contenedor de confeti -->
+    <div id="confettiContainer" class="confetti"></div> 
 
     <script>
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
             const quizCode = urlParams.get('code');
 
-            // Obtener el quiz del localStorage
+            
             const quizzes = JSON.parse(localStorage.getItem('quizzes')) || [];
             const quiz = quizzes.find(q => q.code == quizCode);
 
             if (quiz) {
                 document.getElementById('quizName').innerText = quiz.name;
 
-                // Generar un código de compartir aleatorio de 6 dígitos
+                
                 const randomCode = Math.random().toString().slice(2, 8);
                 document.getElementById('quizCode').innerText = randomCode;
 
@@ -234,7 +234,7 @@
                 return;
             }
 
-            // Obtener respuestas del formulario
+            
             for (let [key, value] of formData.entries()) {
                 quizAnswers[key] = value;
             }
@@ -242,19 +242,19 @@
             const urlParams = new URLSearchParams(window.location.search);
             const quizCode = urlParams.get('code');
 
-            // Obtener el quiz del localStorage
+           
             const quizzes = JSON.parse(localStorage.getItem('quizzes')) || [];
             const quiz = quizzes.find(q => q.code == quizCode);
 
             if (quiz) {
                 const resultContainer = document.getElementById('resultContainer');
-                resultContainer.innerHTML = ''; // Limpiar resultados anteriores
+                resultContainer.innerHTML = ''; 
 
                 let correctCount = 0;
 
                 quiz.questions.forEach((q, index) => {
                     const userAnswer = quizAnswers[`question${index}`];
-                    const correctAnswer = q.correctAnswer; // Respuesta correcta
+                    const correctAnswer = q.correctAnswer; 
 
                     const resultDiv = document.createElement('div');
                     resultDiv.classList.add('result');
@@ -271,7 +271,7 @@
 
                 alert(`¡Has respondido ${correctCount} de ${quiz.questions.length} preguntas correctamente!`);
 
-                // Guardar el resultado del usuario
+              
                 let userResults = JSON.parse(localStorage.getItem('userResults')) || [];
                 userResults.push({ name: userName, score: correctCount });
                 localStorage.setItem('userResults', JSON.stringify(userResults));
@@ -290,12 +290,12 @@
                 });
 
                 if (topPerformers.length >= 3) {
-                    triggerConfetti(); // Activar animación de confeti si hay al menos 3 mejores
+                    triggerConfetti(); 
                 }
             }
         }
 
-        // Función para activar la animación de confeti
+       
         function triggerConfetti() {
             const confettiContainer = document.getElementById('confettiContainer');
             for (let i = 0; i < 100; i++) {
@@ -306,7 +306,7 @@
                 confettiPiece.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
                 confettiContainer.appendChild(confettiPiece);
             }
-            setTimeout(() => confettiContainer.innerHTML = '', 5000); // Limpiar el confeti después de 5 segundos
+            setTimeout(() => confettiContainer.innerHTML = '', 5000); 
         }
     </script>
 </body>
