@@ -12,6 +12,21 @@ function register(req, res) {
   res.render('login/register');
 }
 
+db.query('SELECT * FROM users WHERE username = ?', [username], (err, results) => {
+  if (err) throw err;
+
+  if (results.length > 0) {
+      // Si el usuario ya existe
+      res.send('El nombre de usuario ya está en uso. Por favor, elige otro.');
+  } else {
+      // Crear el nuevo usuario si no existe
+      db.query('INSERT INTO usuarios (username, password) VALUES (?, ?)', [username, password], (err) => {
+          if (err) throw err;
+          res.send('Usuario registrado con éxito');
+      });
+  }
+});
+
 function auth(req, res) {
 	let email = req.body.email;
 	let password = req.body.password;

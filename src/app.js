@@ -40,6 +40,8 @@ const sessionStore = new MySQLStore({
     database: 'nodelogin'
 });
 
+
+
 app.use(session({
     secret: 'secret',
     resave: false,
